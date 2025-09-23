@@ -6,12 +6,12 @@ int main() {
     int n;
 
     std::cout << "Введите натуральное число: ";
-    std::cin >> n;
+    
 
     
-        if (!(std::cin) || n < 1) {
+        while (!(std::cin >> n) || n < 1) {
          std::cout << "Ошибка. Нужно ввести натуральное число!\n";
-        return 1;
+        
         }
      
    
