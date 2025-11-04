@@ -151,7 +151,7 @@ if (sum == 0) {
 }
    
 
-sortRows(matrix, rows, cols);
+
 sortRows(matrix, rows, cols);
 std::cout << "Матрица после преобразований: \n";
 printMatrix(matrix, rows, cols);
