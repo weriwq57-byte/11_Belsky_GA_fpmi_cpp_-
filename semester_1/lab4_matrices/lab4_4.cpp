@@ -124,7 +124,7 @@ else if (method == 2) {
     std::cin >> a;
     std::cout << "Введите вторую границу интервала (a;b): ";
      std::cin >> b;
-    while (std::cin.fail()) {
+    while (!(std::cin)) {
         std::cin.clear();
         std::cin.ignore(10000, '\n');
         std::cout << "Ошибка! Введите целые числа: ";
