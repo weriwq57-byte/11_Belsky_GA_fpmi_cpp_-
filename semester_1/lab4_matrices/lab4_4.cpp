@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <algorithm>
 #include <iomanip>
 
 
@@ -8,11 +9,15 @@ void fromKeyboard(int** matrix, int rows, int cols) {
     for (int i = 0; i < rows; i++) {
         std::cout << "Строка " << i << ": ";
         for (int j = 0; j < cols; j++) {
-            std::cin >> matrix[i][j];
-        }
-    }
+            while (!(std::cin >> matrix[i][j])) {
+                std::cout << "Ошибка! Введите целое число: ";
+                std::cin.clear();
+                std::cin.ignore(10000, '\n');
+            }  
+        }      
+    }          
 }
-
+   
 void randMatrix(int** matrix, int rows, int cols, int min_val, int max_val) {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -25,7 +30,7 @@ void randMatrix(int** matrix, int rows, int cols, int min_val, int max_val) {
 }
 
 void printMatrix(int** matrix, int rows, int cols) {
-    std::cout << "\nМатрица " << rows << "x" << cols << ":\n";
+std::cout << "\nМатрица " << rows << "x" << cols << ":\n";
     std::cout << "     ";
     for (int j = 0; j < cols; j++) {
         std::cout << "[" << j << "] ";
@@ -35,16 +40,16 @@ void printMatrix(int** matrix, int rows, int cols) {
     for (int i = 0; i < rows; i++) {
         std::cout << "[" << i << "] ";
         for (int j = 0; j < cols; j++) {
-            std::cout << std::setw(3) << matrix[i][j] << " ";
+            std::cout << std::setw(5) << matrix[i][j] << " ";
         }
         std::cout << std::endl;
     }
 }
 
 
-int sumWithZero(int** matrix, int rows, int cols) {
+long long sumWithZero(int** matrix, int rows, int cols) {
    
-    int sum = 0;
+    long long sum = 0;
     for (int j = 0; j < cols; j++) {
          bool look_for_zero = false;
         for (int i = 0; i < rows; i++) {    
@@ -63,8 +68,33 @@ int sumWithZero(int** matrix, int rows, int cols) {
 
     return sum;
 }
+#if 1
+void insertionSort(int arr[], int n, bool ascending) {
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        
+        while (j >= 0 && 
+               ((ascending && arr[j] > key) ||
+                (!ascending && arr[j] < key))) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+void sortRows(int** matrix, int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        if (i % 2 == 0) { 
+            insertionSort(matrix[i], cols, true);    
+        } else { 
+            insertionSort(matrix[i], cols, false);   
+        }
+    }
+}
+#endif
 
-
+#if 0
 void merge(int arr[], int left, int mid, int right, bool ascending) {
     int n1 = mid - left + 1;
     int n2 = right - mid;
@@ -72,7 +102,7 @@ void merge(int arr[], int left, int mid, int right, bool ascending) {
     int* leftArr = new int[n1];
     int* rightArr = new int[n2];
     
-    for (int i = 0; i < n1; i++)
+    for (int     i = 0; i < n1; i++)
         leftArr[i] = arr[left + i];
     for (int j = 0; j < n2; j++)
         rightArr[j] = arr[mid + 1 + j];
@@ -136,6 +166,8 @@ void sortRows(int** matrix, int rows, int cols) {
         }
     }
 }
+#endif
+
 int** createMatrix(int rows, int cols) {
     int** matrix = new int*[rows];
     for(int i = 0; i < rows; i++) {
@@ -163,9 +195,16 @@ int main() {
         std::cin >> rows >> cols;
     }
 
-    std::cout << "Выберите способ заполнения матрицы(1 - c клавиатуры; 2 - рандом): ";
-    std::cin >> method;
+    do {
+        std::cout << "Выберите способ заполнения (1 - с клавиатуры, 2 - случайные числа): ";
+        std::cin >> method;
+        if (!(std::cin) || (method != 1 && method != 2)) {
+            std::cout << "Ошибка! Введите 1 или 2.\n";
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+        }
 
+    } while (method != 1 && method != 2);
     int** matrix = createMatrix(rows, cols);
 
     if (method == 1) {
@@ -187,16 +226,10 @@ int main() {
         randMatrix(matrix, rows, cols, a, b);
     }
 
-    else {
-        std::cout << "Введён неверный способ заполнения матрицы." << "\n";
-        deleteMatrix(matrix, rows);
-        return 1; 
-    }
-
     std::cout << "Матрица перед преобразованиями: \n";
     printMatrix(matrix, rows, cols);
 
-    int sum = sumWithZero(matrix, rows, cols);
+    long long sum = sumWithZero(matrix, rows, cols);
     if (sum == 0) {
         std::cout << "\nВ матрице нет столбцов с нулевыми элементами" << std::endl;
     } else {
